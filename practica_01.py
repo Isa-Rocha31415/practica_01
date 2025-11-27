@@ -46,7 +46,7 @@ Seccion 2.2 punto 2
 def juntar_topicos(diccionario:dict[int,str],diccionario_labels:dict[int,str])->dict[str,list[str]]:
     diccionario_vocabulario={}
     for keys,items in diccionario.items():
-        diccionario_vocabulario[diccionario_labels[keys]]=diccionario_vocabulario.get(diccionario_labels[keys],"")+items
+        diccionario_vocabulario[diccionario_labels[keys]]=diccionario_vocabulario.get(diccionario_labels[keys],"")+items+" "
     for keys in diccionario_vocabulario:
         diccionario_vocabulario[keys]=diccionario_vocabulario[keys].split()
     return diccionario_vocabulario
@@ -66,12 +66,18 @@ def sort_frecuencias(diccionario_completo:dict[str,dict[str,int]])->dict[str,lis
 def write_txt(diccionario:dict[str,list[tuple[int,str]]],cantidad:int):
     n=cantidad//2
     with open("keywords.txt","w") as f:
+        labels=[]
         for keys,items in diccionario.items():
             palabras_mas_frecuente=items[:cantidad]
             i=0
             while(i<n):
-                f.write(f"{palabras_mas_frecuente[i]} {palabras_mas_frecuente[i+1]} {palabras_mas_frecuente[cantidad-1-i]} {palabras_mas_frecuente[cantidad-i-2]}\n")
+                f.write(f"{palabras_mas_frecuente[i][1]} {palabras_mas_frecuente[i+1][1]} {palabras_mas_frecuente[cantidad-1-i][1]} {palabras_mas_frecuente[cantidad-i-2][1]}\n")
                 i+=2
+                labels.append(keys)
+        with open("labels_kw.txt","w",encoding="utf-8") as file:
+            for label in labels:
+                file.write(f"{label}\n")
+
         
 """
 Seccion 2.2 punto 1
@@ -90,7 +96,6 @@ data_processed="data_processed.txt"
 labels="labels.txt"
 diccionario_procesado=read_data(data_processed)
 diccionario_labels=read_data(labels)
-diccionario_labels={idx:items for idx,items in diccionario_labels.items() }
 diccionario_topicos=juntar_topicos(diccionario_procesado,diccionario_labels)
 diccionario_frecuencias=get_frecuencias(diccionario_topicos)
 diccionario_frecuencias_ordenadas=sort_frecuencias(diccionario_frecuencias)
