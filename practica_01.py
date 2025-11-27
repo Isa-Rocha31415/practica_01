@@ -68,7 +68,6 @@ def write_txt(diccionario:dict[str,list[tuple[int,str]]],cantidad:int):
     with open("keywords.txt","w") as f:
         for keys,items in diccionario.items():
             palabras_mas_frecuente=items[:cantidad]
-            print(palabras_mas_frecuente)
             i=0
             while(i<n):
                 f.write(f"{palabras_mas_frecuente[i]} {palabras_mas_frecuente[i+1]} {palabras_mas_frecuente[cantidad-1-i]} {palabras_mas_frecuente[cantidad-i-2]}\n")
