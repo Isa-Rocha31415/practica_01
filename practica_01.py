@@ -194,6 +194,35 @@ def escribir(distancias_tuplas:dict[int,list[tuple[float,int]]],cantidad:int):
             topicos_documento=[labels_documentos[documento] for documento in distancias_cercanas]
             texto=f"{tuplas_texto[tupla]}; {labels_tuplas[tupla]}; {distancias_cercanas}; {topicos_documento}\n"
             file.write(texto)
+"""Seccion 2.4 punto
+FUnciones 
+""" 
+
+def precision_recall(resultados: str)->tuple[list[float],list[float]]:
+    lista_precision=[]
+    lista_recall=[]
+    with open("labels.txt", "r", encoding="utf-8") as f:
+        lista = [label.strip() for label in f]
+    with open(resultados, "r", encoding="utf-8") as f:
+        for linea in f:
+            linea = linea.split(";")
+            linea=[l.strip() for l in linea]
+            topico_tupla=linea[1]
+            topicos_documentos=linea[3]
+            lista_documentos=topicos_documentos.replace("[","").replace("]","").replace("'","").split(",")
+            lista_documentos=[topico.strip() for topico in lista_documentos]
+            precision_tupla=precision(topico_tupla,lista_documentos)
+            recall_tupla=recall(topico_tupla,lista_documentos,lista)
+            lista_precision.append(precision_tupla)
+            lista_recall.append(recall_tupla)
+    return lista_precision,lista_recall 
+def precision(topico_tupla:str,lista_documentos:list[str])->float:
+    numerador=sum([1 for topicos in lista_documentos if topico_tupla== topicos])
+    return numerador/len(lista_documentos)
+def recall(topico_tupla:str,lista_documentos:list[str],lista_relevante:list[str])->float:
+    numerador=sum([1 for topicos in lista_documentos if topico_tupla == topicos])
+    documento_relevante=sum(1 for topico in lista_relevante if topico_tupla==topico)
+    return numerador/documento_relevante
 """     
 Seccion 2.2 punto 1
 Llamada de funciones de limpieza de datos
@@ -232,7 +261,6 @@ Sección 2.3 punto 2
 llamada de funciones 
 """
 matriz_tfidf_tuplas=tfidf_keywords("keywords.txt",vocabulario,diccionario_idf)
-print(matriz_tfidf_tuplas)
 """
 Seccion 2.3 punto 3
 llamadas  
@@ -240,3 +268,9 @@ llamadas
 diccionario_tuplas_distancias=tuplas_documentos_coseno(diccionario_vectores_TFIDF_normalizado,matriz_tfidf_tuplas)
 diccionario_tuplas_cercanas=ordernar_tuplas(diccionario_tuplas_distancias)
 escribir(diccionario_tuplas_cercanas,5)
+"""Seccion 2.4 punto
+FUnciones 
+"""
+precision_l,sensibilidad_l=precision_recall("results.txt")
+print(f"El promedio de la metrica de precision: {sum(precision_l)/len(precision_l)}")
+print(f"El promedio de la metrica de recall: {sum(sensibilidad_l)/len(sensibilidad_l)}")
