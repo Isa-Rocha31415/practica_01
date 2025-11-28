@@ -154,6 +154,47 @@ def tfidf_keywords(ruta_keywords:str,vocabulario:set[str],idf:dict[int,float])->
     return vectores 
 
 """
+Seccion 2.3 punto 3
+Funciones 
+"""
+def similitud_coseno(u1:dict[int,float],u2:dict[int,float])->float:
+    keys=set(u1).intersection(set(u2))
+    d=sum( u1[k]*u2[k] for k in keys )
+    return 1-d 
+def tuplas_documentos_coseno(documentos:dict[int,dict[int,float]],tuplas:dict[int,dict[int,float]]):
+    distancias_={}
+    for tupla,vector2 in tuplas.items():
+        distancias={}
+        for documento,vector1 in documentos.items():
+            d=similitud_coseno(vector1,vector2)
+            distancias[documento]=d
+        distancias_[tupla]=distancias
+    return distancias_
+def ordernar_tuplas(distancias_por_tuplas:dict[int,dict[int,float]])->dict[int,list[tuple[float,int]]]:
+    guardar_resultado={}
+    for tupla,distancias in distancias_por_tuplas.items():
+        lista=sorted([(distancia, documento) for documento,distancia in distancias.items() ])
+        guardar_resultado[tupla]=lista 
+    return guardar_resultado 
+"""
+Seccion 2.3 punto 4
+
+"""
+def escribir(distancias_tuplas:dict[int,list[tuple[float,int]]],cantidad:int):
+    with open("labels.txt","r",encoding="utf-8") as file:
+        labels_documentos=[f.strip() for f in file]
+    with open("labels_kw.txt","r",encoding="utf-8") as file:
+        labels_tuplas=[ f.strip() for f in file]
+    with open("keywords.txt","r",encoding="utf-8") as file:
+        tuplas_texto=[f.strip() for f in file]
+    with open("results.txt","w",encoding="utf-8") as file:
+        texto=""
+        for tupla,distancias in distancias_tuplas.items():
+            distancias_cercanas=[documento for _,documento in  distancias[:cantidad]]
+            topicos_documento=[labels_documentos[documento] for documento in distancias_cercanas]
+            texto=f"{tuplas_texto[tupla]}; {labels_tuplas[tupla]}; {distancias_cercanas}; {topicos_documento}\n"
+            file.write(texto)
+"""     
 Seccion 2.2 punto 1
 Llamada de funciones de limpieza de datos
 """
@@ -185,8 +226,17 @@ diccionario_tf=tf(diccionario_procesado,vocabulario)
 diccionario_idf=idf(diccionario_procesado,vocabulario)
 diccionario_vectores_TFIDF=TF_IDF(diccionario_tf,diccionario_idf)
 diccionario_vectores_TFIDF_normalizado=normalizar(diccionario_vectores_TFIDF)
-print(diccionario_vectores_TFIDF_normalizado)
+#print(diccionario_vectores_TFIDF_normalizado)
 """
 Sección 2.3 punto 2
 llamada de funciones 
 """
+matriz_tfidf_tuplas=tfidf_keywords("keywords.txt",vocabulario,diccionario_idf)
+print(matriz_tfidf_tuplas)
+"""
+Seccion 2.3 punto 3
+llamadas  
+"""
+diccionario_tuplas_distancias=tuplas_documentos_coseno(diccionario_vectores_TFIDF_normalizado,matriz_tfidf_tuplas)
+diccionario_tuplas_cercanas=ordernar_tuplas(diccionario_tuplas_distancias)
+escribir(diccionario_tuplas_cercanas,5)
