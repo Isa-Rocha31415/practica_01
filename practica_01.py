@@ -87,7 +87,7 @@ DEclarion de funciones
 def tf(diccionario:dict[int,str],vocabulario:set[str])->dict[int,dict[int,int]]:
     diccionario_tf={}
     #ordenar vocabulario y guardarlo en un diccionario 
-    vocab_list=sorted(vocabulario)
+    vocab_list=sorted(list(vocabulario))
     diccionario_vocabulario={palabra:idx for idx,palabra in enumerate(vocab_list)}
     #Dividir el string en lista de palabras 
     diccionario_spliteado={indice:concepto.split() for indice,concepto in diccionario.items()}
@@ -102,7 +102,7 @@ def tf(diccionario:dict[int,str],vocabulario:set[str])->dict[int,dict[int,int]]:
 def idf(diccionario:dict[int,str],vocabulario:set[str])->dict[int,float]:
     diccionario_idf={}
     #ordenar vocabulario y guardarlo en un diccioanrio 
-    vocab_list=sorted(vocabulario)
+    vocab_list=sorted(list(vocabulario))
     diccionario_vocabulario={palabra:idx for idx,palabra in enumerate(vocab_list)}
     #Dividir el string en lsita d epalabras 
     diccionario_spliteado={indice:concepto.split() for indice,concepto in diccionario.items()}
@@ -138,6 +138,25 @@ def vector_normal(vector:dict[int,float])->dict[int,float]:
 def normalizar(tfidf:dict[int,dict[int,float]])->dict[int,dict[int,float]]:
     return {indice:vector_normal(documento) for indice,documento in tfidf.items()}
 """
+Seccion 2.3 punto 2 
+funciones 
+"""
+def tfidf_keywords(ruta_keywords:str,vocabulario:set[str],idf:dict[int,float])->dict[int,dict[int,float]]:
+    lista_vocabulario=sorted(list(vocabulario))
+    diccionario_vocabulario={palabra:idx for idx,palabra in enumerate(lista_vocabulario)}
+    vectores={}
+    with open(ruta_keywords,"r",encoding="utf-8") as f:
+        for idx,linea in enumerate(f):
+            palabras=linea.strip().split() 
+            tfidf={diccionario_vocabulario[palabra]:idf[diccionario_vocabulario[palabra]] for palabra in palabras}
+            tfidf_normalizado=vector_normal(tfidf)
+            vectores[idx]=tfidf_normalizado
+    return vectores 
+
+
+
+
+"""
 Seccion 2.2 punto 1
 Llamada de funciones de limpieza de datos
 """
@@ -170,3 +189,7 @@ diccionario_idf=idf(diccionario_procesado,vocabulario)
 diccionario_vectores_TFIDF=TF_IDF(diccionario_tf,diccionario_idf)
 diccionario_vectores_TFIDF_normalizado=normalizar(diccionario_vectores_TFIDF)
 print(diccionario_vectores_TFIDF_normalizado)
+"""
+Sección 2.3 punto 2
+llamada de funciones 
+"""
