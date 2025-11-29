@@ -43,7 +43,10 @@ def guardar_resultado(diccionario:dict[int,list[str]],nombre:str):
 """
 Seccion 2.2 punto 2
 """
+<<<<<<< HEAD
+=======
 ######################################
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
 def juntar_topicos(diccionario:dict[int,str],diccionario_labels:dict[int,str])->dict[str,list[str]]:
     diccionario_vocabulario={}
     for keys,items in diccionario.items():
@@ -104,10 +107,17 @@ def idf(diccionario:dict[int,str],vocabulario:set[str])->dict[int,float]:
     #ordenar vocabulario y guardarlo en un diccioanrio 
     vocab_list=sorted(list(vocabulario))
     diccionario_vocabulario={palabra:idx for idx,palabra in enumerate(vocab_list)}
+<<<<<<< HEAD
+    #Dividir el string en lsita de palabras 
+    diccionario_spliteado={indice:concepto.split() for indice,concepto in diccionario.items()}
+    n=len(diccionario_spliteado)
+    #buscar la frecuencia de cada palabra por documento, es decir, en cuantos documentos aparacio 
+=======
     #Dividir el string en lsita d epalabras 
     diccionario_spliteado={indice:concepto.split() for indice,concepto in diccionario.items()}
     n=len(diccionario_spliteado)
     #buscar la frecuencia de cadapalabra por documento, es decir, en cuantos documentos aparacio 
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
     frecuencias_documento={i:0 for i in range(len(vocab_list))}
     for palabras in diccionario_spliteado.values():
         palabras_unicas=set(palabras)
@@ -235,6 +245,10 @@ documentos_sin_acentos=quitar_acentos(documento_sin_palabras_vacias)
 guardar_resultado(documentos_sin_acentos,"data_processed.txt")
 """
 2.2 punto 2
+<<<<<<< HEAD
+Llamadas a las funciones 
+=======
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
 """
 data_processed="data_processed.txt"
 labels="labels.txt"
@@ -249,7 +263,11 @@ write_txt(diccionario_frecuencias_ordenadas,60)
 Sección 2.3 punto 1 
 llamada de funciones 
 """
+<<<<<<< HEAD
+#utilizamos el diccionarios de las variables 103 y 102
+=======
 #VOy a utilizar los diccionarios de la svariables 103 y 102
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
 vocabulario=getVocabulary(diccionario_procesado)
 diccionario_tf=tf(diccionario_procesado,vocabulario)
 diccionario_idf=idf(diccionario_procesado,vocabulario)
@@ -263,14 +281,28 @@ llamada de funciones
 matriz_tfidf_tuplas=tfidf_keywords("keywords.txt",vocabulario,diccionario_idf)
 """
 Seccion 2.3 punto 3
+<<<<<<< HEAD
+Llamada a las funciones 
+=======
 llamadas  
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
 """
 diccionario_tuplas_distancias=tuplas_documentos_coseno(diccionario_vectores_TFIDF_normalizado,matriz_tfidf_tuplas)
 diccionario_tuplas_cercanas=ordernar_tuplas(diccionario_tuplas_distancias)
 escribir(diccionario_tuplas_cercanas,5)
+<<<<<<< HEAD
+
+"""Seccion 2.4 punto
+Llamada a las funciones 
+"""
+precision_l,sensibilidad_l=precision_recall("results.txt")
+print(f"El promedio de la metrica de precision: {sum(precision_l)/len(precision_l)}")
+print(f"El promedio de la metrica de recall: {sum(sensibilidad_l)/len(sensibilidad_l)}")
+=======
 """Seccion 2.4 punto
 FUnciones 
 """
 precision_l,sensibilidad_l=precision_recall("results.txt")
 print(f"El promedio de la metrica de precision: {sum(precision_l)/len(precision_l)}")
 print(f"El promedio de la metrica de recall: {sum(sensibilidad_l)/len(sensibilidad_l)}")
+>>>>>>> 4b71da756c98d42a0a52f32c6464e577ba927fd6
